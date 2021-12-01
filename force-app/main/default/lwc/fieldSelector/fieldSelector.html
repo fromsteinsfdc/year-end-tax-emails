@@ -1,0 +1,101 @@
+<template>
+    <template if:true={isLoading}>
+        <lightning-spinner></lightning-spinner>
+    </template>
+    <div style={publicStyle}>
+        <div class="slds-form-element">
+            <div class="slds-form-element__control">
+                <div class="slds-combobox_container">
+                    <div class="slds-combobox slds-dropdown-trigger slds-dropdown-trigger_click" aria-expanded="true"
+                        aria-haspopup="listbox" role="combobox">
+                        <div class="slds-combobox__form-element slds-input-has-icon slds-input-has-icon_right slds-m-bottom_none"
+                            role="none">
+                            <lightning-input type="text" label={searchLabelCounter} onfocus={handleSearchFocus}
+                                onblur={handleSearchBlur} onchange={handleSearchChange} style={publicStyle}
+                                disabled={isInputDisabled} is-loading={isLoading} placeholder={placeholder}
+                                required={required}>
+                            </lightning-input>
+
+                        </div>
+                        <div id="itemlist"
+                            class="slds-dropdown slds-dropdown_length-10 slds-dropdown_fluid slds-m-top_none"
+                            role="listbox">
+                            <ul class="slds-listbox slds-listbox_vertical" role="presentation">
+                                <template for:each={fields} for:item="field" for:index="index">
+                                    <template if:false={field.hidden}>
+                                        <li role="presentation" class="slds-listbox__item" key={field.name}
+                                            data-index={index} onmousedown={handleFieldSelect}>
+                                            <div class="slds-media slds-listbox__option slds-listbox__option_plain slds-media_small"
+                                                role="option">
+                                                <span
+                                                    class="slds-media__figure slds-listbox__option-icon slds-align-middle">
+                                                    <template if:true={field.icon}>
+                                                        <lightning-icon icon-name={field.icon} size="x-small">
+                                                        </lightning-icon>
+                                                    </template>
+                                                </span>
+                                                <span class="slds-media__body">
+                                                    <span class="slds-truncate" title={field.label}>{field.label}</span>
+                                                    <span class="slds-listbox__option-meta" title={field.name}><span
+                                                            class="slds-truncate">{field.name}</span></span>
+                                                </span>
+                                                <template if:true={field.isLookup}>
+                                                    <span
+                                                        class="slds-icon_container slds-icon-utility-chevronright slds-align-middle"
+                                                        title="Lookup field">
+                                                        <lightning-icon icon-name="utility:chevronright" size="x-small">
+                                                        </lightning-icon>
+                                                    </span>
+                                                </template>
+                                            </div>
+                                        </li>
+                                    </template>
+                                </template>
+                                <template if:true={noMatchFound}>
+                                    <li role="presentation" class="slds-listbox__item">
+                                        <span
+                                            class="slds-media slds-listbox__option slds-listbox__option_entity slds-listbox__option_has-meta"
+                                            role="option">
+                                            <span class="slds-media__body">
+                                                <span class="slds-truncate">
+                                                    {noMatchFoundString}
+                                                </span>
+                                            </span>
+                                        </span>
+                                    </li>
+                                </template>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <template if:false={hidePills}>
+                    <template if:true={selectedFields.length}>
+                        <!-- <div class="slds-pill_container">
+                            <template for:each={selectedFields} for:item="field" for:index="index">
+                                <span class="slds-p-top_xx-small slds-p-right_xx-small" key={field.name}>
+                                    <lightning-pill label={field.label} data-index={index} onremove={handleFieldUnselect}
+                                        key={field.name}> </lightning-pill>
+                                </span>
+                            </template>
+                        </div> -->
+                        <div class="slds-listbox_selection-group slds-is-expanded">
+                            <ul class="slds-listbox slds-listbox_horizontal slds-pill_container" role="listbox" aria-label="Selected Options:"
+                                aria-orientation="horizontal">
+                                <template for:each={selectedFields} for:item="field" for:index="index">
+    
+                                    <li class="slds-listbox-item" role="presentation" key={field.name}>
+                                        <lightning-pill label={field.label} data-index={index}
+                                            onremove={handleFieldUnselect} key={field.name}> </lightning-pill>
+                                    </li>
+                                </template>
+                            </ul>
+                        </div>
+                    </template>
+                </template>
+            </div>
+        </div>
+        <template if:true={errorMessage}>
+            There was an error fetching the fields for object '{objectName}': {errorMessage}
+        </template>
+    </div>
+</template>

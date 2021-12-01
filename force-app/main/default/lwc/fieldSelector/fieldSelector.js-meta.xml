@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LightningComponentBundle xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>52.0</apiVersion>
+    <isExposed>true</isExposed>
+    <masterLabel>SObject Field Picker</masterLabel>
+    <targets>
+        <target>lightning__FlowScreen</target>
+    </targets>
+    <targetConfigs>
+        <targetConfig targets="lightning__FlowScreen">
+            <property name="objectName" label="Object Name" type="String" role="inputOnly" description="Which object is the user going to select fields from?" required="true"/>
+            <property name="allowLookups" label="Enable lookups?" type="boolean" role="inputOnly" description="Allow users to select from fields on objects related via a lookup field. Lookups appear as a list before the standard field list, denoted with a right chevron icon. Default: false"/>
+            <property name="selectedFieldsNamesString" label="Selected Fields Names String" type="String" role="outputOnly" description="Output list of the API names of the fields selected by the user"/>
+            <property name="required" label="Required" type="boolean" role="inputOnly"/>
+            <!-- <property name="selectedFieldsLabelsString" label="Selected Fields Labels String" type="String" role="outputOnly" description="Output list of the user-friendly labels of the fields selected by the user"/> -->
+            
+        </targetConfig>
+    </targetConfigs>
+</LightningComponentBundle>

@@ -1,0 +1,24 @@
+<template>
+    <table style={tableStyle}>
+        <thead style={headerStyle}>
+            <tr>
+                <template for:each={columns} for:item="col">
+                    <th style={headerCellStyle} key={col}>
+                        {col.label}
+                    </th>
+                </template>
+            </tr>
+        </thead>
+        <tbody>
+            <template for:each={records} for:item="record">
+                <tr key={record}>
+                    <template for:each={record.fields} for:item="field">
+                        <td style={bodyCellStyle} key={field.name}>
+                            {field.value}
+                        </td>
+                    </template>
+                </tr>
+            </template>
+        </tbody>
+    </table>
+</template>
