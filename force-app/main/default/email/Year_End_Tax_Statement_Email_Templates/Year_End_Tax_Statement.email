@@ -1,0 +1,15 @@
+<b>Dear {!Contact.FirstName},</b><br>
+<p>
+Thank you for your generous donations to {!Organization.Name} last year. <br><br>
+With your help, we were able to make the world a much better place. <br><br>
+Itemized list of your gifts:<br>
+{!Contact.Gifts_Last_Year__c}
+<br><br>
+
+Total: {!Contact.npo02__OppAmountLastYear__c}<br><br>
+
+Your commitment to our mission makes it all possible.<br><br>
+
+With gratitude and sincere wishes for a happy new year,<br><br>
+
+Everyone at {!Organization.Name}

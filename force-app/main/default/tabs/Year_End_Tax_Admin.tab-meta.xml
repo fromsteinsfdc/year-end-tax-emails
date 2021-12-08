@@ -2,6 +2,6 @@
 <CustomTab xmlns="http://soap.sforce.com/2006/04/metadata">
     <description>Created by Lightning App Builder</description>
     <flexiPage>Year_End_Tax_Admin</flexiPage>
-    <label>Year-End Tax Admin</label>
+    <label>Year End Tax Admin</label>
     <motif>Custom23: Mail</motif>
 </CustomTab>

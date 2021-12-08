@@ -1,24 +1,41 @@
 <template>
-    <table style={tableStyle}>
-        <thead style={headerStyle}>
-            <tr>
-                <template for:each={columns} for:item="col">
-                    <th style={headerCellStyle} key={col}>
-                        {col.label}
-                    </th>
-                </template>
-            </tr>
-        </thead>
-        <tbody>
-            <template for:each={records} for:item="record">
-                <tr key={record}>
-                    <template for:each={record.fields} for:item="field">
-                        <td style={bodyCellStyle} key={field.name}>
-                            {field.value}
-                        </td>
+    <!-- STYLE CONTROL -->
+    <div class="slds-text-heading_medium slds-p-around_x-small">Modify Table Style</div>
+    <div class="controlContainer slds-p-bottom_small" onchange={handleControlChange}>
+        <lightning-input label="Table (overall) CSS string" value={tableStyle} data-property="tableStyle"
+            placeholder="width:100%;border-collapse:collapse;border:2px solid black"></lightning-input>
+        <lightning-input label="Header cell CSS string" value={headerCellStyle} data-property="headerCellStyle"
+            placeholder="CSS string that controls the styling of the column header cells"></lightning-input>
+        <lightning-input label="Body cell CSS string" value={bodyCellStyle} data-property="bodyCellStyle"
+            placeholder="border-color:black; border-style:solid; border-width:2px; padding:0.5em"></lightning-input>
+            <!-- placeholder="border-color:black; border-style:solid; border-width:2px; padding:0.5em"></lightning-input> -->
+    </div>
+    <lightning-button label="Reset to defaults" onclick={handleResetClick} class="slds-p-bottom_medium" variant="brand-outline"></lightning-button>
+
+    <!-- PREVIEW -->
+    <div class="previewContainer">
+        <div class="slds-text-heading_medium slds-p-around_x-small">Preview</div>
+        <table style={tableStyle}>
+            <thead style={headerStyle}>
+                <tr>
+                    <template for:each={columns} for:item="col">
+                        <th style={headerCellStyle} key={col}>
+                            {col.label}
+                        </th>
                     </template>
                 </tr>
-            </template>
-        </tbody>
-    </table>
+            </thead>
+            <tbody>
+                <template for:each={records} for:item="record">
+                    <tr key={record}>
+                        <template for:each={record.fields} for:item="field">
+                            <td style={bodyCellStyle} key={field.name}>
+                                {field.value}
+                            </td>
+                        </template>
+                    </tr>
+                </template>
+            </tbody>
+        </table>
+    </div>
 </template>

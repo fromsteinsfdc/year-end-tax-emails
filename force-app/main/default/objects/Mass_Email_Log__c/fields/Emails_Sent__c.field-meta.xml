@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Emails_Sent__c</fullName>
+    <externalId>false</externalId>
+    <label>Emails Sent</label>
+    <summaryFilterItems>
+        <field>Mass_Email_Log_Item__c.Status__c</field>
+        <operation>equals</operation>
+        <value>Success</value>
+    </summaryFilterItems>
+    <summaryForeignKey>Mass_Email_Log_Item__c.Mass_Email_Log__c</summaryForeignKey>
+    <summaryOperation>count</summaryOperation>
+    <trackTrending>false</trackTrending>
+    <type>Summary</type>
+</CustomField>

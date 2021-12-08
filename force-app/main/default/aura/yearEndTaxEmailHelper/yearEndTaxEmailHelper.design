@@ -1,0 +1,5 @@
+<design:component >
+    <design:attribute name="listViewApiName" label="List View API Name" required="true"/>
+    <design:attribute name="objectApiName" label="Object Name" required="true"/>
+    <design:attribute name="recordIds" label="Record IDs (output)" required="false"/>
+</design:component>

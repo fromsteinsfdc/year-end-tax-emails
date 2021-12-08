@@ -1,64 +1,72 @@
 @isTest
 public class YearEndTaxEmailControllerTest {
 
-    // public HTTPResponse respond(HTTPRequest req) {
-    //     // Optionally, only send a mock response for a specific endpoint
-    //     // and method.
-    //     System.assertEquals('http://example.com/example/test', req.getEndpoint());
-    //     System.assertEquals('GET', req.getMethod());
-        
-    //     // Create a fake response
-    //     HttpResponse res = new HttpResponse();
-    //     res.setHeader('Content-Type', 'application/json');
-    //     res.setBody('{"example":"test"}');
-    //     res.setStatusCode(200);
-    //     return res;
-    // }
-
     public static String demoEmail = 'fromsteinyearendtax@gmail.com';
-    public List<Contact> contacts = new List<Contact>();
 
-    
-    @isTest(seeAllData=true)
-    public static void testv3() {
+    @isTest
+    public static void testYearEndTaxEmail() {
+        System.debug('in yearEndTaxEmail');
         User thisUser = [SELECT Id FROM User WHERE Id = :UserInfo.getUserId()];
         System.runAs(thisUser) {
             Test.startTest();        
-            // Account testAccount = new Account(Name='Test');
-            // insert testAccount;
+            List<Contact> contacts = new List<Contact>();
+            List<Opportunity> opps = new List<Opportunity>();
             List<Id> contactIds = new List<Id>();
-            List<Contact> newContacts = createContacts(10);
-            insert newContacts;
-            List<Opportunity> newOppties = new List<Opportunity>();
-            for (Contact con : newContacts) {
-                Integer ran = Integer.valueOf(Math.random()*50);
-                contactIds.add(con.Id);
-                newOppties.addAll(createOpportunitiesForContact(con, ran));
+            integer numContacts = 10;
+            integer numOppties = 10;
+            for (integer i=0; i<numContacts; i++) {
+                Contact con = new Contact(FirstName='Test', LastName='Contact'+i, Email=demoEmail);
+                System.debug('Contact = '+ con);
+                contacts.add(con);
+
             }
-            System.debug(newOppties.size() + ' new opportunities');
-            insert newOppties;        
+            insert contacts;
+            for (Contact con : contacts) {
+                contactIds.add(con.Id);
+                for (integer i=0; i<numOppties; i++) {
+                    Date closeDate = Date.today().addYears(-1).addDays(-i);
+                    String oppName = con.FirstName +' '+ con.LastName +' donation '+ i;
+                    Opportunity opp = new Opportunity(Name = oppName, npsp__Primary_Contact__c = con.Id, CloseDate = closeDate, Amount = 200, StageName = 'Closed Won');                    
+                    System.debug('opportunity = '+ opp);
+                    opps.add(opp);
+                }
+            }
+            insert opps;
+
+            // List<Contact> contacts = createContacts(1);
+            // System.debug('created '+ contacts.size() +' dummy contacts');
+            // insert contacts;
+            // List<Opportunity> opps = new List<Opportunity>();
+            // for (Contact c : contacts) {
+            //     contactIds.add(c.Id);
+            //     opps.addAll(createOpportunitiesForContact(c, 1));
+            // }
+            // insert opps;
+            // System.debug('created '+ opps.size() +' dummy opps');
+
             // Map<Id, Contact> contactMap = new Map<Id, Contact>([SELECT Id FROM Contact WHERE npo02__OppAmountLastYear__c > 0 LIMIT 10]);
 
             // System.debug('contactMap contains '+ contactMap.keySet().size());
-            Folder testFolder = [SELECT Id FROM Folder WHERE Type='EmailTemplate' OR Type='Email'];
-            EmailTemplate template = new EmailTemplate(Name='Test Email Template', DeveloperName='YETETestEmailTemplate', FolderId=testFolder.Id, Body='Test body.', TemplateType='text');
+            // Folder testFolder = [SELECT Id FROM Folder WHERE Type='EmailTemplate' OR Type='Email'];
+            EmailTemplate template = new EmailTemplate(Name='Test Email Template', DeveloperName='YETETestEmailTemplate', FolderId=UserInfo.getUserId(), Body='Test body.', TemplateType='text');
             insert template;
+            System.debug('email template successfully created, '+ template.Id);
 
             YearEndTaxEmailController.Request req = new YearEndTaxEmailController.Request();
             req.emailTemplateId = template.Id;
             req.contactIds = contactIds;
             // req.contactIds = new List<Id>(contactMap.keySet());
             req.fieldNamesString = 'CloseDate,Amount';
+            System.debug('req = '+ req);
             YearEndTaxEmailController.sendEmail(new List<YearEndTaxEmailController.Request>{req});
-            Test.stopTest();        
+            Test.stopTest();
         }
     }
 
 
     public static List<Contact> createContacts(Integer numContacts) {
-        Account acc = new Account(Name=accountName);
+        Account acc = new Account(Name='Test Account');
         insert acc;
-        Account acc = [SELECT Id FROM Account LIMIT 1];
 
         List<Contact> contacts = new List<Contact>();
         List<String> firstNames = 'David,Marsha,Kendra,Shirley,Emma,Angela,Luis,Powell,Carmine,Jason,Pei,Skylar,Grace,Colleen,Bodhi,Tonya,Tracey'.split(',');

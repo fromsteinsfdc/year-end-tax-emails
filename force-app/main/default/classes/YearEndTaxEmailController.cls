@@ -1,12 +1,10 @@
 public without sharing class YearEndTaxEmailController {    
 
-    // public string defaultStyle = 'border:1px solid black';
-    // public static String resultFlowName = 'Year_End_Tax_Email_Result_Message';
     public static String noOpportunitiesMessage = 'No donations were found that fit the criteria.';
     public static String success = 'success';
     public static String error = 'error';
 
-    @InvocableMethod(label='Send Year End Tax Email')
+    @InvocableMethod(label='Send Year End Tax Email!')
     public static List<Result> sendEmail(List<Request> reqs) {        
         Request req = reqs[0];
         Result res;
@@ -15,42 +13,46 @@ public without sharing class YearEndTaxEmailController {
             res = new Result(error, 'Contact List View ['+ req.listViewId +'] does not contain any Contacts');
         } else {
             try {
-
-                List<contact> updatedContacts = YearEndTaxEmailController.constructGiftTable(req.contactIds, req.fieldNamesString.split(','));
+                List<contact> updatedContacts = constructGiftTable(req.contactIds, req.fieldNamesString.split(','), req.tableStyle, req.headerCellStyle, req.bodyCellStyle);
                 if (updatedContacts == null || updatedContacts.size() == 0) {
 
                 }
                 System.debug('first updated contact: '+ updatedContacts[0]);
                 update updatedContacts;
                 try {
-                    // List<Messaging.SingleEmailMessage> messages = YearEndTaxEmailController.sendEmailTemplateToContacts(req.emailTemplateId, req.contactIds);
-                    YearEndTaxEmailController.sendEmailTemplateToContacts(req.emailTemplateId, req.contactIds);
+                    List<Messaging.SingleEmailMessage> messages = sendEmailTemplateToContacts(req.emailTemplateId, req.contactIds);
+                    // List<Messaging.SingleEmailMessage> messages = generateEmailMessages(req.emailTemplateId, req.contactIds);
+                    // Messaging.sendEmail(messages);
+                    // executeMessagingSend(messages);
                     res = new Result(success, 'You have successfully sent '+ req.contactIds.size() +' messages');
+                    String emailTemplateName = [SELECT Name FROM EmailTemplate WHERE Id =: req.emailTemplateId].Name;
+                    res.logId = logMessages(success, req.emailTemplateId, emailTemplateName +' - '+ Datetime.now(), messages);
                 } catch (Exception e) {
                     res = new Result(error, 'There was an error sending out the emails: '+ e.getMessage());
+                    String emailTemplateName = [SELECT Name FROM EmailTemplate WHERE Id =: req.emailTemplateId].Name;
+                    // res.logId = logMessages(error, req.emailTemplateId, emailTemplateName +' - '+ Datetime.now(), messages);
                 }
             } catch (Exception e) {
-                if (e == null) {
-                    System.debug('there is an error, but e is null');
-                } else {
-                    System.debug('error = '+ e);
-                }
                 String nameString = req.fieldNamesString;                
                 System.debug('field names = '+ nameString);
                 System.debug(e.getMessage());
-                res = new Result(error, 'Error constructing Contact gift table with field names "'+nameString +'": '+ e.getMessage());
+                res = new Result(error, 'Error constructing Contact gift table with field names "'+nameString +'": '+ e.getMessage());                
             }
         }
         System.debug('result = '+ res);
         return new List<Result>{res};
     }
 
+    // @future
+    // public static void executeMessagingSend(List<Messaging.SingleEmailMessage> messages) {
+    //     Messaging.sendEmail(messages);
+    // }
+
     public static List<Messaging.SingleEmailMessage> sendEmailTemplateToContacts(Id emailTemplateId, List<Id> contactIds) {
         System.debug('req.emailTemplateId = '+ emailTemplateId);
         System.debug('req.contactIds = '+ contactIds);
         List<Messaging.SingleEmailMessage> messages = new List<Messaging.SingleEmailMessage>();
         for (Id contactId : contactIds) {
-            System.debug('loop contactId = '+ contactId);
             Messaging.SingleEmailMessage msg = new Messaging.SingleEmailMessage();
             msg.setTargetObjectId(contactId);
             msg.setTemplateId(emailTemplateId);
@@ -58,51 +60,72 @@ public without sharing class YearEndTaxEmailController {
         }
         try {
             Messaging.sendEmail(messages);
-            // pullTrigger(contactIds, emailTemplateId);
         } catch (Exception e) {
             // return null;
         }
         return messages;
-        // return new List<SendEmailResponse>();
     }    
 
-    public static Map<String, Map<String, String>> defaultTableStyle() {
-        Map<String, Map<String, String>> returnMap = new Map<String, Map<String, String>>();
+    public static List<Messaging.SingleEmailMessage> generateEmailMessages(Id emailTemplateId, List<Id> contactIds) {
+        System.debug('req.emailTemplateId = '+ emailTemplateId);
+        System.debug('req.contactIds = '+ contactIds);
+        List<Messaging.SingleEmailMessage> messages = new List<Messaging.SingleEmailMessage>();
+        for (Id contactId : contactIds) {
+            Messaging.SingleEmailMessage msg = new Messaging.SingleEmailMessage();
+            msg.setTargetObjectId(contactId);
+            msg.setTemplateId(emailTemplateId);
+            messages.add(msg);
+        }
+        return messages;
+    }    
 
-        return returnMap;
+    public static Id logMessages(String result, String emailTemplateId, String logEventName, List<Messaging.SingleEmailMessage> messages) {
+        Mass_Email_Log__c newLog = new Mass_Email_Log__c();
+        newLog.Name = logEventName;
+        newLog.Email_Template_ID__c = emailTemplateId;
+        newLog.Result__c = result;
+        insert newLog;
+
+        List<Mass_Email_Log_Item__c> logItems = new List<Mass_Email_Log_Item__c>();
+        for (Messaging.SingleEmailMessage message : messages) {
+            Mass_Email_Log_Item__c newItem = new Mass_Email_Log_Item__c();
+            newItem.Mass_Email_Log__c = newLog.Id;
+            newItem.Contact__c = message.getTargetObjectId();
+            newItem.Email__c = [SELECT Email FROM Contact WHERE Id =: newItem.Contact__c].Email;
+            newItem.Status__c = success;
+            newItem.Email_Content__c = message.getHtmlBody();
+            logItems.add(newItem);
+        }
+        insert logItems;
+
+        return newLog.Id;
     }
 
-    // @future
-    public static List<Contact> constructGiftTable(List<Id> contactIds, List<String> opportunityFieldNames) {        
-        String tableStyle = 'width:100%;border-collapse:collapse;border:2px solid black';
-        String headerStyle = 'background-color:dodgerblue;color:white';
-        String bodyCellStyle = 'border:2px solid black';
-        String headerCellStyle = 'border:2px solid black';
+    // public static Map<String, Map<String, String>> defaultTableStyle() {
+    //     Map<String, Map<String, String>> returnMap = new Map<String, Map<String, String>>();
+    //     return returnMap;
+    // }
+
+    public static List<Contact> getContactsWithPopulatedFieldValues(List<Id> contactIds, List<String> opportunityFieldNames) {        
+        return null;
+    }
+
+    public static List<Contact> constructGiftTable(List<Id> contactIds, List<String> opportunityFieldNames, String tableStyle, String headerCellStyle, String bodyCellStyle) {        
+        // String tableStyle = 'width:100%;border-collapse:collapse;border:2px solid black';
+        // String headerStyle = 'background-color:dodgerblue;color:white';
+        // String bodyCellStyle = 'border:2px solid black';
+        // String headerCellStyle = 'border:2px solid black';
 
         System.debug('in constructGiftTable');
         String fieldNameString = String.join(opportunityFieldNames, ',');
-        System.debug('fieldNameString = '+ fieldNameString);
-        System.debug('about to call getFields');
         Map<String, FieldSelectorController.Field> fields = getFields('Opportunity', opportunityFieldNames);
-        System.debug('successfully called getFields');
-        System.debug('fields.keySet() = '+ fields.keySet());
 
-        // replacing npsp__Primary_Contact__c with Primary_Contact__c for testing in ido
 
-        System.debug('a1');
         Map<Id, Opportunity> oppMapWithContactId = new Map<Id, Opportunity>([SELECT npsp__Primary_Contact__c FROM Opportunity WHERE npsp__Primary_Contact__c IN :contactIds AND CloseDate = LAST_YEAR AND IsWon = true]);
-        System.debug('a2 - '+ oppMapWithContactId == null);
         List<Opportunity> opps = Database.query('SELECT '+ fieldNameString +' FROM Opportunity WHERE npsp__Primary_Contact__c IN :contactIds AND CloseDate = LAST_YEAR AND IsWon = true ORDER BY CloseDate ASC');
-        System.debug('a3 - '+ opps == null);
-        // if (oppMapWithContactId.size() == 0 || opps.size() == 0) {
-        //     System.debug('No opportunities found!');
-        //     return null;
-        // }
-        System.debug('a4');
         List<Contact> contacts = [SELECT Id, Gifts_Last_Year__c FROM Contact WHERE Id IN :contactIds];        
         Map<Id, List<Opportunity>> contactOppMap = new Map<Id, List<Opportunity>>();
         for (Opportunity opp : opps) {
-            System.debug('loop through opp '+ opp.Id);
             Id contactId = oppMapWithContactId.get(opp.Id).npsp__Primary_Contact__c;
             if (contactOppMap.containsKey(contactId)) {
                 contactOppMap.get(contactId).add(opp);
@@ -113,7 +136,7 @@ public without sharing class YearEndTaxEmailController {
         // String cellStyle = 'border:1px solid black;padding:5px';
         for (Contact con : contacts) {
             System.debug('loop through contact '+ con.Id);
-            String tableString = '<table style="'+ tableStyle +'"><thead style="'+ headerStyle +'"><tr>';
+            String tableString = '<table style="'+ tableStyle +'"><thead><tr>';
             for (String fieldName : fields.keySet()) {            
                 String cellString = '<th style="'+ headerCellStyle +'">'+ fields.get(fieldName).label +'</th>';
                 System.debug('cellString = '+ cellString);
@@ -161,6 +184,7 @@ public without sharing class YearEndTaxEmailController {
         List<FieldSelectorController.Field> fields = new List<FieldSelectorController.Field>();
         Map<String, FieldSelectorController.Field> fieldNameMap = new Map<String, FieldSelectorController.Field>();
         for (String fieldName : fieldNames) {
+            fieldName = fieldName.trim();
             System.debug('looping through '+ fieldName);
             System.debug('objectRes.fields keyset = '+ objectRes.fields.getMap().keySet());
             System.debug('object contains field? '+ objectRes.fields.getMap().containsKey(fieldName));
@@ -189,7 +213,7 @@ public without sharing class YearEndTaxEmailController {
         @InvocableVariable(label='Contact IDs' required=true)
         public List<String> contactIds;
 
-        @InvocableVariable(label='Email Template Id' required=true)
+        @InvocableVariable(label='Email Template ID' required=true)
         public String emailTemplateId;
 
         @InvocableVariable(label='Field Names String' required=true)
@@ -197,6 +221,15 @@ public without sharing class YearEndTaxEmailController {
 
         @InvocableVariable(label='List View ID')
         public String listViewId;
+
+        @InvocableVariable(label='Table CSS string')
+        public String tableStyle;
+
+        @InvocableVariable(label='Header Cell CSS string')
+        public String headerCellStyle;
+
+        @InvocableVariable(label='Body Cell CSS string')
+        public String bodyCellStyle;
     }
 
     public class Result {

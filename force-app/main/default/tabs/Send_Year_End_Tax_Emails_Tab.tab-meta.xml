@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomTab xmlns="http://soap.sforce.com/2006/04/metadata">
+    <description>Tab used to expose the Send Year End Tax Emails Flow.</description>
+    <flexiPage>Send_Year_End_Tax_Emails</flexiPage>
+    <label>Send Year End Tax Emails</label>
+    <motif>Custom23: Mail</motif>
+</CustomTab>

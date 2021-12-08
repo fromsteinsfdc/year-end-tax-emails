@@ -1,0 +1,6 @@
+<aura:component implements="lightning:availableForFlowActions" access="global">
+    <aura:attribute name="listViewApiName" type="String" required="true"/>
+    <aura:attribute name="objectApiName" type="String" required="true"/>
+    <aura:attribute name="recordIds" type="String[]" required="true"/>
+    <c:getIdsFromListViewHelper listViewApiName="{!v.listViewApiName}" objectApiName="{!v.objectApiName}" onnewrecordids="{!c.handleNewRecordIds}"/>
+</aura:component>	

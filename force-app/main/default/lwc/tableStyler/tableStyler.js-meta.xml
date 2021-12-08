@@ -6,11 +6,25 @@
     <targets>
         <target>lightning__FlowScreen</target>
     </targets>
-    <!-- <targetConfigs>
+    <targetConfigs>
         <targetConfig targets="lightning__FlowScreen">
-            <property name="listViewApiName" label="List View API Name" type="String" role="inputOnly" description="API name of the List View to fetch" required="true"/>
+            <!-- <property name="listViewApiName" label="List View API Name" type="String" role="inputOnly" description="API name of the List View to fetch" required="true"/>
             <property name="objectApiName" label="Object Name" type="String" role="inputOnly" description="API name of the object the List View belongs to" required="true"/>            
-            <property name="recordIds" label="List of record IDs" type="String[]" role="outputOnly" description="Output list of the IDs of the records in the List View"/>            
+            <property name="recordIds" label="List of record IDs" type="String[]" role="outputOnly" description="Output list of the IDs of the records in the List View"/>             -->
+
+            <!-- <property name="defaultTableStyle" label="Default Table CSS string" type="String" role="inputOnly" default="width:100%;border-collapse:collapse;border:2px solid black" description="DEFAULT CSS string for the table element" />            
+            <property name="defaultBodyCellStyle" label="Default Body Cell CSS string" type="String" role="inputOnly" description="DEFAULT CSS string for the body cell element" />            
+            <property name="defaultHeaderCellStyle" label="Default Header Cell CSS string" type="String" role="inputOnly" description="DEFAULT CSS string for the header cell element" />             -->
+
+            <property name="tableStyle" label="Table CSS string" type="String" description="CSS string for the table element" />            
+            <property name="bodyCellStyle" label="Body Cell CSS string" type="String" description="CSS string for the body cell element" />            
+            <property name="headerCellStyle" label="Header Cell CSS string" type="String" description="CSS string for the header cell element" />            
+            <!-- <property name="headerStyle" label="DEPRECATED Header Cell CSS string" type="String" description="Do not use" />             -->
+
+            <!-- @api headerStyle = 'background-color:dodgerblue;color:white';
+            @api bodyCellStyle = 'border:2px solid black;padding:0.5em';
+            @api headerCellStyle = 'border:2px solid black;padding:0.5em'; -->
+        
         </targetConfig>
-    </targetConfigs> -->
+    </targetConfigs>
 </LightningComponentBundle>

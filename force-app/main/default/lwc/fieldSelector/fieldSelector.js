@@ -285,8 +285,8 @@ export default class FieldSelector extends LightningElement {
                 // console.log(JSON.stringify(field));
                 // console.log('error?');
                 field.hidden = true;
-                console.log(field.name +' was just hidden because it is already selected');
-                console.log('selectedFields = '+ JSON.stringify(this.selectedFields));
+                // console.log(field.name +' was just hidden because it is already selected');
+                // console.log('selectedFields = '+ JSON.stringify(this.selectedFields));
             } else {
                 // console.log('field = ' + JSON.stringify(field));
                 // WARNING: I don't know why some fields are appearing without name
@@ -299,7 +299,7 @@ export default class FieldSelector extends LightningElement {
                     // field.filteredIndex = index++;
                 } else {
                     // filtered++;
-                    console.log('hiding '+ field.name +' because ')
+                    // console.log('hiding '+ field.name +' because ')
                     field.hidden = true;
                     // if (isAmount) {
                     //     console.log('amount was just hidden because it did not match the search term');
