@@ -3,14 +3,20 @@
     <actionCalls>
         <name>Send_the_Emails</name>
         <label>Send the Emails</label>
-        <locationX>507</locationX>
-        <locationY>305</locationY>
+        <locationX>530</locationX>
+        <locationY>212</locationY>
         <actionName>YearEndTaxEmailController</actionName>
         <actionType>apex</actionType>
         <connector>
             <targetReference>Results_Screen</targetReference>
         </connector>
         <flowTransactionModel>Automatic</flowTransactionModel>
+        <inputParameters>
+            <name>bodyCellStyle</name>
+            <value>
+                <elementReference>bodyCellStyle</elementReference>
+            </value>
+        </inputParameters>
         <inputParameters>
             <name>contactIds</name>
             <value>
@@ -30,12 +36,35 @@
             </value>
         </inputParameters>
         <inputParameters>
+            <name>headerCellStyle</name>
+            <value>
+                <elementReference>headerCellStyle</elementReference>
+            </value>
+        </inputParameters>
+        <inputParameters>
             <name>listViewId</name>
             <value>
                 <elementReference>listViewId</elementReference>
             </value>
         </inputParameters>
-        <storeOutputAutomatically>true</storeOutputAutomatically>
+        <inputParameters>
+            <name>tableStyle</name>
+            <value>
+                <elementReference>tableStyle</elementReference>
+            </value>
+        </inputParameters>
+        <outputParameters>
+            <assignToReference>logId</assignToReference>
+            <name>logId</name>
+        </outputParameters>
+        <outputParameters>
+            <assignToReference>sendMessage</assignToReference>
+            <name>message</name>
+        </outputParameters>
+        <outputParameters>
+            <assignToReference>sendStatus</assignToReference>
+            <name>status</name>
+        </outputParameters>
     </actionCalls>
     <apiVersion>53.0</apiVersion>
     <dynamicChoiceSets>
@@ -138,8 +167,8 @@
     <screens>
         <name>Confirmation_Screen</name>
         <label>Confirmation Screen</label>
-        <locationX>332</locationX>
-        <locationY>305</locationY>
+        <locationX>363</locationX>
+        <locationY>212</locationY>
         <allowBack>true</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>false</allowPause>
@@ -149,7 +178,7 @@
         </connector>
         <fields>
             <name>dispWarning</name>
-            <fieldText>&lt;p style=&quot;text-align: center;&quot;&gt;&lt;b style=&quot;font-size: 20px; color: rgb(234, 32, 32);&quot;&gt;READ BEFORE SENDING!&lt;/b&gt;&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot;font-size: 16px;&quot;&gt;You are about to be redirected to a loading page. &lt;/span&gt;&lt;b style=&quot;font-size: 16px;&quot;&gt;Please do not close or refresh the page until you see a confirmation message.&lt;/b&gt;&lt;span style=&quot;font-size: 16px;&quot;&gt; This may take several minutes, depending on how many emails you&apos;re sending.&lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot;font-size: 14px;&quot;&gt;Note: Salesforce has a limit of 5,000 emails/day using the API. If you have more than 5,000 contacts to email you need to split them up over multiple days.&lt;/span&gt;&lt;/p&gt;</fieldText>
+            <fieldText>&lt;p style=&quot;text-align: center;&quot;&gt;&lt;b style=&quot;color: rgb(234, 32, 32); font-size: 20px;&quot;&gt;READ BEFORE SENDING!&lt;/b&gt;&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;&lt;b style=&quot;font-size: 16px;&quot;&gt;Please do not close or refresh the page until you see a confirmation message.&lt;/b&gt;&lt;span style=&quot;font-size: 16px;&quot;&gt; This may take several minutes, depending on how many emails you&apos;re sending.&lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot;font-size: 14px;&quot;&gt;Note: Salesforce has a limit of 5,000 emails/day using the API. If you have more than 5,000 contacts to email you need to split them up over multiple days.&lt;/span&gt;&lt;/p&gt;</fieldText>
             <fieldType>DisplayText</fieldType>
         </fields>
         <fields>
@@ -179,11 +208,11 @@
     <screens>
         <name>Results_Screen</name>
         <label>Results Screen</label>
-        <locationX>684</locationX>
-        <locationY>305</locationY>
-        <allowBack>true</allowBack>
+        <locationX>682</locationX>
+        <locationY>212</locationY>
+        <allowBack>false</allowBack>
         <allowFinish>true</allowFinish>
-        <allowPause>true</allowPause>
+        <allowPause>false</allowPause>
         <fields>
             <name>Results_Screen_Section1</name>
             <fieldType>RegionContainer</fieldType>
@@ -192,35 +221,7 @@
                 <fieldType>Region</fieldType>
                 <fields>
                     <name>dispSuccess</name>
-                    <fieldText>&lt;p&gt;Success&lt;/p&gt;&lt;p&gt;&lt;span style=&quot;color: rgb(6, 125, 35); font-size: 20px;&quot;&gt;{!Send_the_Emails.message}&lt;/span&gt;&lt;/p&gt;</fieldText>
-                    <fieldType>DisplayText</fieldType>
-                </fields>
-                <inputParameters>
-                    <name>width</name>
-                    <value>
-                        <stringValue>12</stringValue>
-                    </value>
-                </inputParameters>
-                <isRequired>false</isRequired>
-            </fields>
-            <isRequired>false</isRequired>
-            <visibilityRule>
-                <conditionLogic>1</conditionLogic>
-                <conditions>
-                    <leftValueReference>Send_the_Emails.status</leftValueReference>
-                    <operator>EqualTo</operator>
-                </conditions>
-            </visibilityRule>
-        </fields>
-        <fields>
-            <name>Results_Screen_Section2</name>
-            <fieldType>RegionContainer</fieldType>
-            <fields>
-                <name>Results_Screen_Section2_Column1</name>
-                <fieldType>Region</fieldType>
-                <fields>
-                    <name>dispError</name>
-                    <fieldText>&lt;p&gt;&lt;span style=&quot;color: rgb(224, 27, 27); font-size: 20px; background-color: rgb(255, 255, 255);&quot;&gt;{!Send_the_Emails.message}&lt;/span&gt;&lt;/p&gt;</fieldText>
+                    <fieldText>&lt;p&gt;&lt;span style=&quot;color: rgb(6, 125, 35); font-size: 20px;&quot;&gt;{!sendMessage}&lt;/span&gt;&lt;/p&gt;</fieldText>
                     <fieldType>DisplayText</fieldType>
                 </fields>
                 <inputParameters>
@@ -235,27 +236,130 @@
             <visibilityRule>
                 <conditionLogic>and</conditionLogic>
                 <conditions>
-                    <leftValueReference>Send_the_Emails.status</leftValueReference>
-                    <operator>NotEqualTo</operator>
+                    <leftValueReference>sendStatus</leftValueReference>
+                    <operator>EqualTo</operator>
                     <rightValue>
                         <stringValue>success</stringValue>
                     </rightValue>
                 </conditions>
             </visibilityRule>
         </fields>
+        <fields>
+            <name>Results_Screen_Section2</name>
+            <fieldType>RegionContainer</fieldType>
+            <fields>
+                <name>Results_Screen_Section2_Column1</name>
+                <fieldType>Region</fieldType>
+                <fields>
+                    <name>dispError</name>
+                    <fieldText>&lt;p&gt;&lt;span style=&quot;background-color: rgb(255, 255, 255); font-size: 20px; color: rgb(224, 27, 27);&quot;&gt;{!sendMessage}&lt;/span&gt;&lt;/p&gt;</fieldText>
+                    <fieldType>DisplayText</fieldType>
+                </fields>
+                <inputParameters>
+                    <name>width</name>
+                    <value>
+                        <stringValue>12</stringValue>
+                    </value>
+                </inputParameters>
+                <isRequired>false</isRequired>
+            </fields>
+            <isRequired>false</isRequired>
+            <visibilityRule>
+                <conditionLogic>and</conditionLogic>
+                <conditions>
+                    <leftValueReference>sendStatus</leftValueReference>
+                    <operator>EqualTo</operator>
+                    <rightValue>
+                        <stringValue>error</stringValue>
+                    </rightValue>
+                </conditions>
+            </visibilityRule>
+        </fields>
+        <fields>
+            <name>dispLogId</name>
+            <fieldText>&lt;p&gt;You can reference send details by viewing Mass Email Log &lt;a href=&quot;/{!logId}&quot; rel=&quot;noopener noreferrer&quot; target=&quot;_blank&quot;&gt;{!logId}&lt;/a&gt;. &lt;/p&gt;</fieldText>
+            <fieldType>DisplayText</fieldType>
+            <visibilityRule>
+                <conditionLogic>and</conditionLogic>
+                <conditions>
+                    <leftValueReference>logId</leftValueReference>
+                    <operator>IsNull</operator>
+                    <rightValue>
+                        <booleanValue>false</booleanValue>
+                    </rightValue>
+                </conditions>
+            </visibilityRule>
+        </fields>
+        <nextOrFinishButtonLabel>Complete</nextOrFinishButtonLabel>
         <showFooter>true</showFooter>
         <showHeader>true</showHeader>
     </screens>
     <screens>
-        <name>User_Input_Screen</name>
-        <label>User Input Screen</label>
-        <locationX>176</locationX>
-        <locationY>305</locationY>
-        <allowBack>false</allowBack>
+        <name>Table_Style</name>
+        <label>Table Style</label>
+        <locationX>209</locationX>
+        <locationY>212</locationY>
+        <allowBack>true</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>false</allowPause>
         <connector>
             <targetReference>Confirmation_Screen</targetReference>
+        </connector>
+        <fields>
+            <name>dispStyleHeader</name>
+            <fieldText>&lt;p&gt;&lt;span style=&quot;font-size: 20px;&quot;&gt;Style the Donation Table&lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;Optionally, you can modify the styling (i.e. border colour and thickness, font size, background colours) of the donations table in the email template. You can change the CSS values for the table as a whole, the column header cells, and the table body cells.&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;New to CSS?&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;https://divtable.com/table-styler/&quot; rel=&quot;noopener noreferrer&quot; target=&quot;_blank&quot;&gt;divtable&lt;/a&gt; and &lt;a href=&quot;https://www.quackit.com/html/html_table_generator.cfm&quot; rel=&quot;noopener noreferrer&quot; target=&quot;_blank&quot;&gt;quackit&lt;/a&gt; provide some useful tools for generating CSS for tables. Try playing around with some options, you can always hit reset!&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot;font-size: 11px;&quot;&gt;Note: the table below is for preview purposes only and does not reflect data from your contacts or your selected field names.&lt;/span&gt;&lt;/p&gt;</fieldText>
+            <fieldType>DisplayText</fieldType>
+        </fields>
+        <fields>
+            <name>tableStyler</name>
+            <extensionName>c:tableStyler</extensionName>
+            <fieldType>ComponentInstance</fieldType>
+            <inputParameters>
+                <name>bodyCellStyle</name>
+                <value>
+                    <elementReference>bodyCellStyle</elementReference>
+                </value>
+            </inputParameters>
+            <inputParameters>
+                <name>headerCellStyle</name>
+                <value>
+                    <elementReference>headerCellStyle</elementReference>
+                </value>
+            </inputParameters>
+            <inputParameters>
+                <name>tableStyle</name>
+                <value>
+                    <elementReference>tableStyle</elementReference>
+                </value>
+            </inputParameters>
+            <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
+            <isRequired>true</isRequired>
+            <outputParameters>
+                <assignToReference>bodyCellStyle</assignToReference>
+                <name>bodyCellStyle</name>
+            </outputParameters>
+            <outputParameters>
+                <assignToReference>headerCellStyle</assignToReference>
+                <name>headerCellStyle</name>
+            </outputParameters>
+            <outputParameters>
+                <assignToReference>tableStyle</assignToReference>
+                <name>tableStyle</name>
+            </outputParameters>
+        </fields>
+        <showFooter>true</showFooter>
+        <showHeader>false</showHeader>
+    </screens>
+    <screens>
+        <name>User_Input_Screen</name>
+        <label>User Input Screen</label>
+        <locationX>50</locationX>
+        <locationY>212</locationY>
+        <allowBack>false</allowBack>
+        <allowFinish>true</allowFinish>
+        <allowPause>false</allowPause>
+        <connector>
+            <targetReference>Table_Style</targetReference>
         </connector>
         <fields>
             <name>User_Input_Screen_Section1</name>
@@ -265,7 +369,7 @@
                 <fieldType>Region</fieldType>
                 <fields>
                     <name>dispEmailTemplate</name>
-                    <fieldText>&lt;p&gt;&lt;b style=&quot;font-size: 14px;&quot;&gt;Select Email Template to Use&lt;/b&gt; (&lt;a href=&quot;/lightning/setup/CommunicationTemplatesEmail/home&quot; rel=&quot;noopener noreferrer&quot; target=&quot;_blank&quot;&gt;open Email Templates&lt;/a&gt;)&lt;/p&gt;&lt;p&gt;&lt;span style=&quot;background-color: rgb(255, 255, 255); color: rgb(62, 62, 60);&quot;&gt;In email templates, references to the field &lt;/span&gt;&lt;span style=&quot;background-color: rgb(255, 255, 255); color: rgb(62, 62, 60); font-family: courier;&quot;&gt;Contact.Gifts_Last_Year__c&lt;/span&gt;&lt;span style=&quot;background-color: rgb(255, 255, 255); color: rgb(62, 62, 60);&quot;&gt; will be displayed in the email as a table of the fields you select below.&lt;/span&gt;&lt;/p&gt;</fieldText>
+                    <fieldText>&lt;p&gt;&lt;b style=&quot;font-size: 14px;&quot;&gt;Select Email Template to Use&lt;/b&gt; (&lt;a href=&quot;/lightning/setup/CommunicationTemplatesEmail/home&quot; rel=&quot;noopener noreferrer&quot; target=&quot;_blank&quot;&gt;open Email Templates&lt;/a&gt;)&lt;/p&gt;&lt;p&gt;&lt;span style=&quot;background-color: rgb(255, 255, 255); color: rgb(62, 62, 60);&quot;&gt;In email templates, references to the field &lt;/span&gt;&lt;span style=&quot;background-color: rgb(255, 255, 255); color: rgb(62, 62, 60); font-family: courier;&quot;&gt;Contact.Gifts_Last_Year__c&lt;/span&gt;&lt;span style=&quot;background-color: rgb(255, 255, 255); color: rgb(62, 62, 60);&quot;&gt; will be displayed in the email as a table of the fields you select below.&lt;span class=&quot;ql-cursor&quot;&gt;﻿&lt;/span&gt;&lt;/span&gt;&lt;/p&gt;</fieldText>
                     <fieldType>DisplayText</fieldType>
                 </fields>
                 <inputParameters>
@@ -346,7 +450,7 @@
                 <fieldType>Region</fieldType>
                 <fields>
                     <name>dispFormatting</name>
-                    <fieldText>&lt;p&gt;&lt;b style=&quot;font-size: 14px;&quot;&gt;Format the Data Table&lt;/b&gt;&lt;/p&gt;&lt;p&gt;Choose which fields will appear in the table table. Pick from all fields on the Contact object, plus lookups to related objects. The most common use is use Close Date + Amount, but you can also customize for any fields required by your organization.&lt;/p&gt;</fieldText>
+                    <fieldText>&lt;p&gt;&lt;b style=&quot;font-size: 14px;&quot;&gt;Pick Fields for the Data Table&lt;/b&gt;&lt;/p&gt;&lt;p&gt;Choose which Opportunity fields will appear in the table. We recommend at least &lt;b&gt;Close Date&lt;/b&gt; and &lt;b&gt;Amount&lt;/b&gt;, but you can customize and include any fields required by your organization.&lt;/p&gt;</fieldText>
                     <fieldType>DisplayText</fieldType>
                 </fields>
                 <inputParameters>
@@ -379,7 +483,13 @@
                     <inputParameters>
                         <name>allowLookups</name>
                         <value>
-                            <booleanValue>true</booleanValue>
+                            <booleanValue>false</booleanValue>
+                        </value>
+                    </inputParameters>
+                    <inputParameters>
+                        <name>selectedFieldsNamesString</name>
+                        <value>
+                            <stringValue>CloseDate, Amount</stringValue>
                         </value>
                     </inputParameters>
                     <inputsOnNextNavToAssocScrn>UseStoredValues</inputsOnNextNavToAssocScrn>
@@ -403,13 +513,23 @@
         <showHeader>false</showHeader>
     </screens>
     <start>
-        <locationX>50</locationX>
+        <locationX>149</locationX>
         <locationY>50</locationY>
         <connector>
             <targetReference>User_Input_Screen</targetReference>
         </connector>
     </start>
-    <status>Draft</status>
+    <status>Active</status>
+    <variables>
+        <name>bodyCellStyle</name>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection>
+        <isInput>false</isInput>
+        <isOutput>false</isOutput>
+        <value>
+            <stringValue>border:2px solid black; padding:0.5em</stringValue>
+        </value>
+    </variables>
     <variables>
         <name>emailTemplateId</name>
         <dataType>String</dataType>
@@ -425,6 +545,16 @@
         <isOutput>false</isOutput>
     </variables>
     <variables>
+        <name>headerCellStyle</name>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection>
+        <isInput>false</isInput>
+        <isOutput>false</isOutput>
+        <value>
+            <stringValue>border:2px solid black; padding:0.5em</stringValue>
+        </value>
+    </variables>
+    <variables>
         <name>listViewApiName</name>
         <dataType>String</dataType>
         <isCollection>false</isCollection>
@@ -437,5 +567,36 @@
         <isCollection>false</isCollection>
         <isInput>false</isInput>
         <isOutput>false</isOutput>
+    </variables>
+    <variables>
+        <name>logId</name>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection>
+        <isInput>false</isInput>
+        <isOutput>false</isOutput>
+    </variables>
+    <variables>
+        <name>sendMessage</name>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection>
+        <isInput>false</isInput>
+        <isOutput>false</isOutput>
+    </variables>
+    <variables>
+        <name>sendStatus</name>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection>
+        <isInput>false</isInput>
+        <isOutput>false</isOutput>
+    </variables>
+    <variables>
+        <name>tableStyle</name>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection>
+        <isInput>false</isInput>
+        <isOutput>false</isOutput>
+        <value>
+            <stringValue>width:100%; border-collapse:collapse; border-width:2px; border-style: solid; border-color: black</stringValue>
+        </value>
     </variables>
 </Flow>
